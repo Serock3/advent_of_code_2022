@@ -68,10 +68,10 @@ fn solve(input: &str) -> i32 {
 }
 
 fn solve_2(input: &str) -> usize {
-    let cols = input.lines().next().unwrap().len();
-    let rows = input.lines().collect::<Vec<&str>>().len();
+    let num_cols = input.lines().next().unwrap().len();
+    let num_rows = input.lines().count();
 
-    let hight = input
+    let height = input
         .lines()
         .map(|line| {
             line.chars()
@@ -81,54 +81,19 @@ fn solve_2(input: &str) -> usize {
         .collect_vec();
 
     let mut max_scenic_score = 0;
-    for i_row in 1..rows - 1 {
-        for i_col in 1..cols - 1 {
-            let current_height = hight[i_row][i_col];
-            let row = &hight[i_row];
-            let col = hight.iter().map(|row| row[i_col]).collect_vec();
+    for i_row in 1..num_rows - 1 {
+        for i_col in 1..num_cols - 1 {
+            let row = &height[i_row];
+            let col = height.iter().map(|row| row[i_col]).collect_vec();
 
-            let mut delta = 0;
-            let vis_to_right = loop {
-                if i_col + delta == cols - 1 {
-                    break delta;
-                }
-                delta += 1;
-                if row[i_col + delta] >= current_height {
-                    break delta;
-                }
-            };
+            let vis_to_right = distance_to_tree_of_same_height(row.iter().skip(i_col));
 
-            let mut delta = 0;
-            let vis_to_left = loop {
-                if i_col - delta == 0 {
-                    break delta;
-                }
-                delta += 1;
-                if row[i_col - delta] >= current_height {
-                    break delta;
-                }
-            };
-            let mut delta = 0;
-            let vis_down = loop {
-                if i_row + delta == rows - 1 {
-                    break delta;
-                }
-                delta += 1;
-                if col[i_row + delta] >= current_height {
-                    break delta;
-                }
-            };
+            let vis_to_left =
+                distance_to_tree_of_same_height(row.iter().rev().skip(num_cols - i_col - 1));
 
-            let mut delta = 0;
-            let vis_up = loop {
-                delta += 1;
-                if i_row - delta == 0 {
-                    break delta;
-                }
-                if col[i_row - delta] >= current_height {
-                    break delta;
-                }
-            };
+            let vis_down = distance_to_tree_of_same_height(col.iter().skip(i_row));
+
+            let vis_up = distance_to_tree_of_same_height(col.iter().rev().skip(num_rows - i_row - 1));
 
             let scenic_score = vis_to_right * vis_to_left * vis_up * vis_down;
             if scenic_score > max_scenic_score {
@@ -138,6 +103,17 @@ fn solve_2(input: &str) -> usize {
     }
 
     max_scenic_score
+}
+
+fn distance_to_tree_of_same_height<'a>(mut view: impl Iterator<Item = &'a i32>) -> usize {
+    let max_height = view.next().unwrap();
+    if let Some((i, _)) = view
+        .enumerate()
+        .find_or_last(|(_, look_height)| *look_height >= max_height) {
+        i + 1
+    } else {
+        0
+    }
 }
 
 #[test]
