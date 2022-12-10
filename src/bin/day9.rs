@@ -125,7 +125,7 @@ fn solve_2(input: &str) -> usize {
 
             for i in 0..9 {
                 let head_pos = tail_list[i];
-                let mut tail_pos = tail_list.get_mut(i+1).unwrap();
+                let mut tail_pos = tail_list.get_mut(i + 1).unwrap();
                 let del_x = head_pos.0 - tail_pos.0;
                 let del_y = head_pos.1 - tail_pos.1;
                 match (del_x, del_y) {
