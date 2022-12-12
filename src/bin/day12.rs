@@ -43,25 +43,11 @@ fn solve_2(input: &str) -> usize {
         })
         .collect_vec();
 
-    input
-        .chars()
-        .enumerate()
-        .filter(|(_, r)| *r == 'S' || *r == 'a')
-        .map(|(index, _)| index)
-        .filter_map(|start| {
-            let line_len = input.lines().next().unwrap().len() + 1;
-            let start = (start / line_len, start % line_len);
-            let goal = input.find('E').unwrap();
-            let goal = (goal / line_len, goal % line_len);
-            dumb_pathfinder(&heights, start, goal)
-        })
-        .min()
-        .unwrap()
-    // let start = input.find('E').unwrap();
-    // let line_len = input.lines().next().unwrap().len() + 1;
-    // let start = (start / line_len, start % line_len);
+    let start = input.find('E').unwrap();
+    let line_len = input.lines().next().unwrap().len() + 1;
+    let start = (start / line_len, start % line_len);
 
-    // dumb_pathfinder_2(&heights, start).unwrap()
+    dumb_pathfinder_2(&heights, start).unwrap()
 }
 
 fn dumb_pathfinder_2(heights: &Vec<Vec<u8>>, start: (usize, usize)) -> Option<usize> {
@@ -168,6 +154,7 @@ fn get_reachable_neighbors_reverse(
 
     reachable
 }
+
 fn get_reachable_neighbors(
     heights: &Vec<Vec<u8>>,
     current: ((usize, usize), usize),
