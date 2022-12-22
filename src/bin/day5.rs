@@ -48,23 +48,22 @@ fn main() {
                 .unwrap()
         })
     {
-        let range = (stacks[from - 1].len() - amount)..;
-        // let mut moving_crates = stacks[from - 1].drain(range).rev().collect();
-        let mut moving_crates = stacks[from - 1].drain(range).collect();
+        let len = stacks[from - 1].len();
+        let mut moving_crates = stacks[from - 1].drain((len - amount)..).collect();
         stacks[to - 1].append(&mut moving_crates);
     }
-    for stack in stacks.iter(){
-        print!("{}",stack.last().unwrap());
+    for stack in stacks.iter() {
+        print!("{}", stack.last().unwrap());
     }
     // println!("{stacks:?}");
     // dbg!(stacks);
 }
 
 // const test_input: &str = r#"
-// [D]    
-// [N] [C]    
+// [D]
+// [N] [C]
 // [Z] [M] [P]
-//  1   2   3 
+//  1   2   3
 
 // move 1 from 2 to 1
 // move 3 from 1 to 3
