@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 fn main() {
     let input = std::fs::read_to_string("input/day11.txt").unwrap();
-    // println!("Answer 1: {}", solve(&input));
+    println!("Answer 1: {}", solve(&input));
     println!("Answer 2: {}", solve_2(&input));
 }
 

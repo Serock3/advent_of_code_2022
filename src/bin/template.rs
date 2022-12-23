@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 fn main() {
     let input = std::fs::read_to_string("input/day??.txt").unwrap();
     println!("Answer 1: {}", solve(&input));

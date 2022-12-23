@@ -1,13 +1,10 @@
-use std::{
-    cmp::{max, min},
-    collections::HashSet,
-};
+use std::cmp::{max, min};
 
 use itertools::Itertools;
 
 fn main() {
     let input = std::fs::read_to_string("input/day15.txt").unwrap();
-    // println!("Answer 1: {}", solve(&input, 2000000)); // 4879972
+    println!("Answer 1: {}", solve(&input, 2000000)); // 4879972
     println!("Answer 2: {}", solve_2(&input, 4000000));
 }
 
@@ -88,7 +85,7 @@ fn solve_2(input: &str, window: i32) -> u128 {
         for ((x_sensor, y_sensor), (x_beacon, y_beacon)) in &parsed {
             let manhattan_dist = (x_sensor - x_beacon).abs() + (y_sensor - y_beacon).abs();
             let overlap_row = manhattan_dist - (y - y_sensor).abs();
-            let overlap_window = manhattan_dist - ((window/2 - x_sensor).abs() - window/2);
+            let overlap_window = manhattan_dist - ((window / 2 - x_sensor).abs() - window / 2);
             if overlap_row >= 0 && overlap_window >= 0 {
                 let range = ((x_sensor - overlap_row), (x_sensor + overlap_row));
                 ranges.push(range);
@@ -108,7 +105,7 @@ fn solve_2(input: &str, window: i32) -> u128 {
         ranges[0].0 = max(ranges[0].0, 0);
         ranges.last_mut().unwrap().1 = min(ranges.last_mut().unwrap().1, window);
 
-        if y % (window /10) == 0 {
+        if y % (window / 10) == 0 {
             dbg!(y);
         }
         let occupied = ranges.iter().map(|(l, h)| h - l).sum::<i32>();

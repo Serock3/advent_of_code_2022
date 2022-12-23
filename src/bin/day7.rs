@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 fn main() {
     let input = std::fs::read_to_string("input/day7.txt").unwrap();
+    println!("Answer: {}", solve(&input));
     println!("Answer: {}", solve_2(&input));
 }
 
