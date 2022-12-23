@@ -108,7 +108,7 @@ fn solve_2(input: &str) -> i32 {
     let time = 26;
     let current_valve = "AA";
 
-    (0..1 << cave.valid_room_enum.len())
+    (0..(1 << cave.valid_room_enum.len())/2)
         .map(|your_valves_bitfield| {
             let elephant_valves_bitfield = !your_valves_bitfield;
             // println!("{elephant_valves_bitfield:b}");
