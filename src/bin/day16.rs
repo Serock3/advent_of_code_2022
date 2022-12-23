@@ -4,6 +4,7 @@ use itertools::Itertools;
 
 use petgraph::algo::floyd_warshall;
 use petgraph::data::FromElements;
+use petgraph::visit::IntoNodeIdentifiers;
 use petgraph::{prelude::*, Graph, Undirected};
 
 fn main() {
@@ -12,7 +13,7 @@ fn main() {
     // println!("Answer 2: {}", solve_2(&input));
 }
 
-fn solve(input: &str) -> usize {
+fn solve(input: &str) -> u32 {
     let parsed = input
         .lines()
         .map(|line| {
@@ -42,24 +43,19 @@ fn solve(input: &str) -> usize {
         }
     }
     let dist = floyd_warshall(&graph, |_| 1).unwrap();
-
-    dbg!(&dist);
-
-    let mut graph: Graph<u32, (), Undirected> = Graph::default();
-
-    let node_names: HashMap<String, NodeIndex<_>> = parsed
-        .iter()
-        .map(|item| (item.0.to_string(), graph.add_node(item.1)))
-        .collect();
-
-    graph.extend_with_edges(parsed.iter().flat_map(|item| {
-        item.2
-            .iter()
-            .map(|node_b| (node_names[item.0], node_names[*node_b]))
-    }));
+    let idx = flow_rates.iter().enumerate()
 
     todo!()
 }
+
+
+fn asd(time: u32, valve: &str, open: &[bool]) -> u32 {
+
+    let next = todo!();
+    ads(time- dist[next]- 1, next, todo!())
+    
+}
+
 
 #[test]
 fn test_example() {
