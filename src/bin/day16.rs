@@ -2,36 +2,61 @@ use std::collections::HashMap;
 
 use itertools::Itertools;
 
+use petgraph::algo::floyd_warshall;
+use petgraph::data::FromElements;
+use petgraph::{prelude::*, Graph, Undirected};
+
 fn main() {
-    let input = std::fs::read_to_string("input/day??.txt").unwrap();
+    let input = std::fs::read_to_string("input/day16.txt").unwrap();
     println!("Answer 1: {}", solve(&input));
     // println!("Answer 2: {}", solve_2(&input));
 }
 
 fn solve(input: &str) -> usize {
-    let graph: HashMap<String, (u32, Vec<&str>)> = HashMap::from_iter(input.lines().map(|line| {
-        let (node, rem) = &line
-            .strip_prefix("Valve ")
-            .unwrap()
-            .split_once(" has flow rate=")
-            .unwrap();
-        let (flow_rate, rem) = rem
-            .split_once("; tunnels lead to valves ")
-            .unwrap_or_else(|| rem.split_once("; tunnel leads to valve ").unwrap());
-        let connected_nodes = rem.split(", ").collect_vec();
+    let parsed = input
+        .lines()
+        .map(|line| {
+            let (node, rem) = &line
+                .strip_prefix("Valve ")
+                .unwrap()
+                .split_once(" has flow rate=")
+                .unwrap();
+            let (flow_rate, rem) = rem
+                .split_once("; tunnels lead to valves ")
+                .unwrap_or_else(|| rem.split_once("; tunnel leads to valve ").unwrap());
 
-        (
-            node.to_string(),
-            (flow_rate.parse::<u32>().unwrap(), connected_nodes),
-        )
-    }));
+            let connected_nodes = rem.split(", ").collect_vec();
 
-    let mut tree: Vec<(Vec<(&str, bool)>, u32)> = vec![(vec![("AA", false)], 0)];
+            (*node, flow_rate.parse::<u32>().unwrap(), connected_nodes)
+        })
+        .collect_vec();
 
-    loop {
-        let best_node = tree.iter().max_by(|a,b| a.1.cmp(&b.1)).unwrap();
-        
+    let mut graph: GraphMap<&str, (), Directed> = Default::default();
+    let mut flow_rates = HashMap::new();
+    for item in parsed.iter() {
+        if item.1 != 0{
+            flow_rates.insert(item.0, item.1);
+        }
+        for node_b in item.2.iter() {
+            graph.add_edge(item.0, node_b, ());
+        }
     }
+    let dist = floyd_warshall(&graph, |_| 1).unwrap();
+
+    dbg!(&dist);
+
+    let mut graph: Graph<u32, (), Undirected> = Graph::default();
+
+    let node_names: HashMap<String, NodeIndex<_>> = parsed
+        .iter()
+        .map(|item| (item.0.to_string(), graph.add_node(item.1)))
+        .collect();
+
+    graph.extend_with_edges(parsed.iter().flat_map(|item| {
+        item.2
+            .iter()
+            .map(|node_b| (node_names[item.0], node_names[*node_b]))
+    }));
 
     todo!()
 }
